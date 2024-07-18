@@ -16,8 +16,12 @@ public class cadastroVIEW extends javax.swing.JFrame {
      */
     public cadastroVIEW() {
         initComponents();
+    }   
+    
+    public void limparDados() {
+        cadastroNome.setText("");
+        cadastroValor.setText("");
     }
-
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -163,7 +167,9 @@ public class cadastroVIEW extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(null, "Erro ao tentar inserir produto");
         }
-
+        
+        this.limparDados();
+        
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
     private void btnProdutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutosActionPerformed
