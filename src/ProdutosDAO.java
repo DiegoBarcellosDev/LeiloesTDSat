@@ -1,12 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 
-/**
- *
- * @author Adm
- */
 import java.sql.PreparedStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -76,6 +68,7 @@ public class ProdutosDAO {
             PreparedStatement stmt = this.conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
             ArrayList<ProdutosDTO> listagem = new ArrayList<>();
+            
             while (rs.next()) {
                 ProdutosDTO produto = new ProdutosDTO();
                 produto.setId(rs.getInt("id"));
@@ -103,6 +96,7 @@ public class ProdutosDAO {
             st = conn.prepareStatement(sql);
             st.setInt(1, id);
             st.executeUpdate();
+            
         } catch (SQLException ex) {
             System.out.println("Erro ao conectar: " + ex.getMessage());
         }
