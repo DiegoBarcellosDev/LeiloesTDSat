@@ -66,5 +66,47 @@ public class ProdutosDAO {
         }
 
     }
+    
+    public ArrayList<ProdutosDTO> listarProdutosVendidos() {
+        
+        conn = conectaDAO.connectDB();
+        String sql = "SELECT id, nome, valor, status FROM produtos WHERE status = 'Vendido' ORDER BY nome ASC";
+
+        try {
+            PreparedStatement stmt = this.conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            ArrayList<ProdutosDTO> listagem = new ArrayList<>();
+            while (rs.next()) {
+                ProdutosDTO produto = new ProdutosDTO();
+                produto.setId(rs.getInt("id"));
+                produto.setNome(rs.getString("nome"));
+                produto.setValor(rs.getInt("valor"));
+                produto.setStatus(rs.getString("status"));
+                listagem.add(produto);
+            }
+
+            return listagem;
+
+        } catch (SQLException e) {
+            return null;
+        }
+
+    }
+    
+    public void venderProduto(int id) {
+        
+        conn = conectaDAO.connectDB();
+
+        String sql = "UPDATE produtos SET status = 'Vendido' WHERE id = ?";
+        
+        try {
+            st = conn.prepareStatement(sql);
+            st.setInt(1, id);
+            st.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println("Erro ao conectar: " + ex.getMessage());
+        }
+        
+    }
 
 }
