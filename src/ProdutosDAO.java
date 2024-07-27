@@ -1,12 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 
-/**
- *
- * @author Adm
- */
 import java.sql.PreparedStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -42,7 +34,7 @@ public class ProdutosDAO {
     }
 
     public ArrayList<ProdutosDTO> listarProdutos() {
-        
+
         conn = conectaDAO.connectDB();
         String sql = "SELECT id, nome, valor, status FROM produtos ORDER BY nome ASC";
 
@@ -65,6 +57,63 @@ public class ProdutosDAO {
             return null;
         }
 
+    }
+
+    public ArrayList<ProdutosDTO> listarProdutosVendidos() {
+
+        conn = conectaDAO.connectDB();
+        String sql = "SELECT id, nome, valor, status FROM produtos WHERE status = 'Vendido' ORDER BY nome ASC";
+
+        try {
+            PreparedStatement stmt = this.conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            ArrayList<ProdutosDTO> listagem = new ArrayList<>();
+
+            while (rs.next()) {
+                ProdutosDTO produto = new ProdutosDTO();
+                produto.setId(rs.getInt("id"));
+                produto.setNome(rs.getString("nome"));
+                produto.setValor(rs.getInt("valor"));
+                produto.setStatus(rs.getString("status"));
+                listagem.add(produto);
+            }
+
+            return listagem;
+
+        } catch (SQLException e) {
+            return null;
+        }
+
+    }
+
+    public boolean venderProduto(int id) {
+ Connection conn = null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        boolean status = false;
+
+        try {
+            conn = conectaDAO.connectDB();
+
+            String checkSql = "SELECT COUNT(*) FROM produtos WHERE id = ?";
+            st = conn.prepareStatement(checkSql);
+            st.setInt(1, id);
+            rs = st.executeQuery();
+
+            if (rs.next() && rs.getInt(1) > 0) {
+                String updateSql = "UPDATE produtos SET status = 'Vendido' WHERE id = ?";
+                st = conn.prepareStatement(updateSql);
+                st.setInt(1, id);
+                st.executeUpdate();
+                status = true;
+            } else {
+                status = false;
+            }
+        } catch (SQLException ex) {
+            System.out.println("Erro ao conectar: " + ex.getMessage());
+            status = false;
+        }
+        return status;
     }
 
 }
