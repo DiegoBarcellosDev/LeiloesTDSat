@@ -34,7 +34,7 @@ public class ProdutosDAO {
     }
 
     public ArrayList<ProdutosDTO> listarProdutos() {
-        
+
         conn = conectaDAO.connectDB();
         String sql = "SELECT id, nome, valor, status FROM produtos ORDER BY nome ASC";
 
@@ -58,9 +58,9 @@ public class ProdutosDAO {
         }
 
     }
-    
+
     public ArrayList<ProdutosDTO> listarProdutosVendidos() {
-        
+
         conn = conectaDAO.connectDB();
         String sql = "SELECT id, nome, valor, status FROM produtos WHERE status = 'Vendido' ORDER BY nome ASC";
 
@@ -68,7 +68,7 @@ public class ProdutosDAO {
             PreparedStatement stmt = this.conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
             ArrayList<ProdutosDTO> listagem = new ArrayList<>();
-            
+
             while (rs.next()) {
                 ProdutosDTO produto = new ProdutosDTO();
                 produto.setId(rs.getInt("id"));
@@ -85,22 +85,35 @@ public class ProdutosDAO {
         }
 
     }
-    
-    public void venderProduto(int id) {
-        
-        conn = conectaDAO.connectDB();
 
-        String sql = "UPDATE produtos SET status = 'Vendido' WHERE id = ?";
-        
+    public boolean venderProduto(int id) {
+ Connection conn = null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        boolean status = false;
+
         try {
-            st = conn.prepareStatement(sql);
+            conn = conectaDAO.connectDB();
+
+            String checkSql = "SELECT COUNT(*) FROM produtos WHERE id = ?";
+            st = conn.prepareStatement(checkSql);
             st.setInt(1, id);
-            st.executeUpdate();
-            
+            rs = st.executeQuery();
+
+            if (rs.next() && rs.getInt(1) > 0) {
+                String updateSql = "UPDATE produtos SET status = 'Vendido' WHERE id = ?";
+                st = conn.prepareStatement(updateSql);
+                st.setInt(1, id);
+                st.executeUpdate();
+                status = true;
+            } else {
+                status = false;
+            }
         } catch (SQLException ex) {
             System.out.println("Erro ao conectar: " + ex.getMessage());
+            status = false;
         }
-        
+        return status;
     }
 
 }
